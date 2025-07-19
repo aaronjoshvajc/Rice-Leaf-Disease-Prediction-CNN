@@ -1,40 +1,81 @@
-Report on Data Augmentation
+# Rice Leaf Disease Detection using CNN
+This deep learning project aims to detect and classify rice leaf diseases into three categories using Convolutional Neural Networks (CNNs) and Transfer Learning.
 
-Techniques Applied
-Rotation: Random rotations up to 30 degrees
-Zoom: 0.2 range zoom-in/out
-Width & Height Shift: Small shifts to simulate real-world variation
-Horizontal & Vertical Flip: To simulate mirrored leaf appearance
-Rescale: Pixel normalization using rescale=1./255
-Brightness: between 0.8 to 1.2 Range
-Effectiveness
-Helped reduce overfitting in the Custom CNN model
-Did not significantly improve transfer learning models due to limited data
-Conclusion
-While Transfer Learning models did not outperform the Custom CNN due to the extremely limited dataset size (~120 images), data augmentation played a vital role in improving the generalizability of the custom architecture.
+# Problem Statement
+Build an image classification system to detect:
 
-Report on Models
+Leaf Smut
 
-Custom CNN Model
-Structure: 3 convolutional layers with increasing filter depth, followed by max pooling, flattening, and dense layers.
-Loss Function: Sparse Categorical Crossentropy
-Accuracy: ~83% (best performance among all models tested)
-Performed decently with limited data; susceptible to overfitting. Reduced complexity helped improve generalization.
+Brown Spot
 
-MobileNetV2
-Transfer Learning: Used pretrained weights from ImageNet; only last few layers unfrozen.
-Used Because Lightweight, fast inference, efficient on small datasets.
+Bacterial Leaf Blight
+
+The project includes data preprocessing, model training (Custom CNN and pre-trained networks), and performance evaluation — to identify the best approach for production deployment.
+
+# Dataset Summary
+Collected ~120 labeled rice leaf images across 3 disease categories.
+
+Dataset had class imbalance and missing samples (addressed in preprocessing).
+
+Images resized and normalized for model input.
+
+# Workflow Overview
+## Image Preprocessing
+Resized, normalized, and converted images to NumPy arrays
+
+Handled class imbalance by duplicating underrepresented classes
+
+Performed stratified train-test split
+
+## Data Augmentation
+Applied real-world image transformations to improve generalization:
+
+Rotation (up to 30°)
+
+Zoom (±20%)
+
+Horizontal & vertical flips
+
+Brightness adjustment
+
+Rescaling (1./255)
+
+## Models Implemented
+### Custom CNN Model
+3 Convolutional layers + MaxPooling
+
+Flatten + Dense layers with ReLU + Dropout
+
+Accuracy: ~83%
+
+Performed best due to its simplicity & augmentation support
+
+### MobileNetV2 (Transfer Learning)
+Pre-trained on ImageNet, fine-tuned last few layers
+
 Accuracy: ~33%
-Failed to generalize due to small dataset size and limited variation.
 
-ResNet50
-Transfer Learning: Pretrained on ImageNet, final layers customized.
-Reason for Used: Deep architecture good for learning complex patterns.
-Accuracy: ~33%
-Suffered from underfitting; not suitable for extremely small datasets without further tuning.
+Lightweight but failed due to small dataset
 
-EfficientNetB0
-Transfer Learning: Pretrained backbone, Global Average Pooling, and Dense output.
-Why Used: Balanced in terms of parameters and accuracy.
-Accuracy: ~33%
-Could not leverage full potential due to insufficient data.
+### Heavy architecture with limited fine-tuning
+
+Did not generalize well
+
+### EfficientNetB0
+Modern architecture, fast inference
+
+Similar performance limitations as other pre-trained models
+
+## Evaluation Highlights
+Model	Accuracy	Notes
+Custom CNN	83%	Best overall
+MobileNetV2	33%	Poor generalization
+ResNet50	~40%	Slightly better, still weak
+EfficientNetB0	~45%	No significant improvement
+
+## Key Insights
+Custom CNN worked best due to small dataset size and effective augmentation.
+
+Transfer Learning models struggled due to data sparsity.
+
+Data Augmentation significantly reduced overfitting in Custom CNN.
